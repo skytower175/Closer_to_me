@@ -1,36 +1,68 @@
-body, html {
-    margin: 0;
-    font-family: sans-serif;
-    background-color: lightblue;
+.geo-app {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  font-family: Arial, sans-serif;
+  text-align: center;
 }
 
-.content {
-    margin: 0 auto;
-    width: 400px;
+.controls {
+  margin: 2rem 0;
 }
 
-table, td, th {
-    border: 1px solid #aaa;
+button {
+  background: #4c7af5;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  margin: 0 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
 }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
+button:hover {
+  background: #3658c5;
 }
 
-th {
-    height: 30px;
+button.active {
+  background: #ff4d4d;
 }
 
-td {
-    text-align: center;
-    padding: 5px;
+.results {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
 }
 
-.form {
-    margin-top: 20px;
+.results ul {
+  list-style: none;
+  padding: 0;
 }
 
-#content {
-    width: 70%;
+.results li {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #ff4d4d;
+  padding: 1rem;
+  border: 1px solid #ffcccc;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.status {
+  color: #666;
+  margin-top: 1rem;
+}
+
+a {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #4c7af5;
+  text-decoration: none;
 }

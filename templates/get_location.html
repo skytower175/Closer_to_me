@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Geolocation{% endblock %}
+{% block content %}
+  <h2>Your Geolocation Info</h2>
+  {% if geo_data %}
+    <ul>
+      <li><strong>Country:</strong> {{ geo_data.country }}</li>
+      <li><strong>Region:</strong> {{ geo_data.region }}</li>
+      <li><strong>City:</strong> {{ geo_data.city }}</li>
+      <li><strong>Organization:</strong> {{ geo_data.org }}</li>
+      <li><strong>Latitude:</strong> {{ geo_data.lat }}</li>
+      <li><strong>Longitude:</strong> {{ geo_data.lon }}</li>
+    </ul>
+    {% if geo_data.lat and geo_data.lon %}
+      <iframe
+        width="450"
+        height="300"
+        frameborder="0"
+        style="border:0"
+        src="https://www.openstreetmap.org/export/embed.html?bbox={{ geo_data.lon|float - 0.01 }},{{ geo_data.lat|float - 0.01 }},{{ geo_data.lon|float + 0.01 }},{{ geo_data.lat|float + 0.01 }}&layer=mapnik&marker={{ geo_data.lat }},{{ geo_data.lon }}"
+        allowfullscreen>
+      </iframe>
+      <br/>
+      <small>
+        <a href="https://www.openstreetmap.org/?mlat={{ geo_data.lat }}&mlon={{ geo_data.lon }}#map=12/{{ geo_data.lat }}/{{ geo_data.lon }}" target="_blank">
+          View Larger Map
+        </a>
+      </small>
+    {% endif %}
+  {% else %}
+    <p>No geolocation data available.</p>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Registered Users & Locations</h2>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Location</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.address }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

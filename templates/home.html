@@ -2,4 +2,31 @@
 
 {% block content %}
     <h1>{% block title %} Welcome to your Flask app! {% endblock %}</h1>
+    <form method="post" action="{{ url_for('home') }}">
+        <input type="text" name="token" placeholder="Enter token" required>
+        <input type="text" name="location" placeholder="Enter desired location" required>
+        <button type="submit">Search</button>
+    </form>
+    {% if token %}
+        <p>Your token: {{ token }}</p>
+    {% endif %}
+    {% if location %}
+        <p>You entered: {{ location }}</p>
+    {% endif %}
+    {% if lat and lon %}
+        <h3>Location on Map:</h3>
+        <div id="map" style="height: 400px;"></div>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script>
+          var map = L.map('map').setView([{{ lat }}, {{ lon }}], 13);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+          }).addTo(map);
+          L.marker([{{ lat }}, {{ lon }}]).addTo(map)
+            .bindPopup('{{ location }}')
+            .openPopup();
+        </script>
+    {% endif %}
 {% endblock %}

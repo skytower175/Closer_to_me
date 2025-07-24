@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Results for: {{ location }}</h2>
+  {% if location %}
+    <p>You entered: {{ location }}</p>
+  {% endif %}
+  {% if lat and lon %}
+    <h3>Location on Map:</h3>
+    <div id="map" style="height: 400px;"></div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      var map = L.map('map').setView([{{ lat|float }}, {{ lon|float }}], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+      L.marker([{{ lat|float }}, {{ lon|float }}]).addTo(map) 
+        .bindPopup('{{ location }}')
+        .openPopup();
+    </script>
+  {% endif %}
+
+  {% if school %}
+    <h3>Nearest School:</h3>
+    <p>Name: {{ school.name }}</p>
+    <p>Address: {{ school.address }}</p>
+    <p>Distance: {{ school.distance }} km</p>
+  {% endif %}
+{% endblock %}

@@ -28,5 +28,15 @@
             .bindPopup('{{ location }}')
             .openPopup();
         </script>
+        {% if school or shopping %}
+            <h3>Nearest School:</h3>
+            <p>Name: {{ school.name }}</p>
+            <p>Address: {{ school.address }}</p>
+            <p>Distance: {{ school.distance }} km</p>
+            <h3>Nearest Shopping Center:</h3>
+            <p>Name: {{ shopping.name }}</p>
+            <p>Address: {{ shopping.address }}</p>
+            <p>Distance: {{ shopping.distance }} m</p>
+        {% endif %}
     {% endif %}
 {% endblock %}

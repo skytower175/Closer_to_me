@@ -1,15 +1,21 @@
 from datetime import datetime
-from . import db
+from app import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    address = db.Column(db.String(200), nullable=True)
+    token = db.Column(db.String(200), nullable=True)  # Token for API access
     
     # Relationship to properties (one-to-many)
     properties = db.relationship('Property', backref='owner', lazy='dynamic')
+
+    def __init__(self, username, email, address=None, token=None):
+        self.username = username
+        self.email = email
+        self.address = address
+        self.token = token
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -29,6 +35,21 @@ class Property(db.Model):
     listed_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
     
+
+    def __init__(self, title, description, price, bedrooms, bathrooms, sqft, address, city, state, zip_code, owner):
+        self.title = title
+        self.description = description
+        self.price = price
+        self.bedrooms = bedrooms
+        self.bathrooms = bathrooms
+        self.sqft = sqft
+        self.address = address
+        self.city = city
+        self.state = state
+        self.zip_code = zip_code
+        self.owner = owner
+
+
     # Foreign key to User
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 

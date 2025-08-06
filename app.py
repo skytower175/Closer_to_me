@@ -1,64 +1,85 @@
 from flask import Flask, render_template, request, jsonify
 import requests
-import config
-from config import IPINFO_TOKEN, GEOAPIFY_API_KEY    
 import googlemaps
-from geopy.distance import geodesic 
 from datetime import datetime
 import googlemaps   
 from flask_sqlalchemy import SQLAlchemy
 
+
+from flask_migrate import Migrate
+from config import Config
+
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # or your preferred DB
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+
+
+# Initialize database
 db = SQLAlchemy(app)
- # Replace with your actual API key
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    address = db.Column(db.String(200), nullable=True)
-    def __init__(self, username, email, address=None):
-        self.username = username
-        self.email = email
-        self.address = address
+from models import User, Property
+# Replace with your actual API key
+IPINFO_TOKEN = "1fa5cd7debaa74"
+GEOAPIFY_API_KEY = "f3e6910ed731470e8f7463759f3d5b37"
 
-    def __repr__(self):
-        return f'<User {self.username}>'
+@app.route('/init_db')
+def init_db():
+    # Create tables
+    db.create_all()
+    
+    # Create sample data
+    user1 = User(username='john', email='john@example.com', token=GEOAPIFY_API_KEY)
+    user2 = User(username='sarah', email='sarah@example.com', token=GEOAPIFY_API_KEY)
 
-def get_property_listings(location, token):
-    url = "https://realtor-com-real-estate.p.rapidapi.com/for-sale"
-    querystring = {
-        "location": location,
-        "offset": "0",
-        "limit": "10"  # Number of listings to show
-    }
-    headers = {
-        "X-RapidAPI-Key": token,
-        "X-RapidAPI-Host": REAL_ESTATE_HOST
-    }
+    property1 = Property(
+        title='Beautiful Family Home',
+        description='Spacious 4-bedroom house with garden',
+        price=750000,
+        bedrooms=4,
+        bathrooms=2.5,
+        sqft=2400,
+        address='123 Main St',
+        city='San Francisco',
+        state='CA',
+        zip_code='94105',
+        owner=user1
+    )
+    
+    property2 = Property(
+        title='Modern Downtown Condo',
+        description='Luxury condo with city views',
+        price=950000,
+        bedrooms=2,
+        bathrooms=2,
+        sqft=1200,
+        address='456 Market St',
+        city='San Francisco',
+        state='CA',
+        zip_code='94103',
+        owner=user2
+    )
+    
+    db.session.add(user1)
+    db.session.add(user2)
+    db.session.add(property1)
+    db.session.add(property2)
+    db.session.commit()
 
-    try:
-        response = requests.get(url, headers=headers, params=querystring)
-        response.raise_for_status()
-        return response.json().get('data', {}).get('results', [])
-    except requests.exceptions.RequestException as e:
-        print(f"API Error: {e}")
-        return []
-
-@app.route('/token', methods=['GET', 'POST'])
-def token():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     message = None
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
         address = request.form.get('address')
-        if username and email and address:
+        token = request.form.get('token')
+        if username and email and address and token:    
+            # Here you would typically verify the token and authenticate the user
+            # For simplicity, we will just create a new user
             user = User(username=username, email=email, address=address)
             db.session.add(user)
             db.session.commit()
-            message = "User registered successfully!"
+            message = "User logged in successfully!"    
         else:
             message = "All fields are required."
     return render_template('register.html', message=message)
@@ -71,7 +92,8 @@ def users():
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    token = None
+
+    token = "f3e6910ed731470e8f7463759f3d5b37"
     location = None
     lat = None
     lon = None
@@ -105,7 +127,7 @@ def home():
                     school = {
                         'name': school_feature['properties'].get('name', 'Unknown'),
                         'address': school_feature['properties'].get('address_line2', 'Unknown'),
-                        'distance': school_feature['properties'].get('distance', 0)
+                        'distance': school_feature['properties'].get('distance', 10)
                     }
                 # Find nearest shopping center
                 shopping_url = (
@@ -119,7 +141,7 @@ def home():
                     shopping = {
                         'name': shopping_feature['properties'].get('name', 'Unknown'),
                         'address': shopping_feature['properties'].get('address_line2', 'Unknown'),
-                        'distance': shopping_feature['properties'].get('distance', 0)
+                        'distance': shopping_feature['properties'].get('distance', 10)
                     }
     
             

@@ -1,69 +1,26 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Blueprint, Flask, render_template, request, jsonify
 import requests
-import googlemaps
 from datetime import datetime
 import googlemaps   
+from Scrap_realtor import get_realtor_properties
+from extensions import db
+from models import User, Property
+from config import API_KEY, RAPIDAPI_KEY, GEOAPIFY_API_KEY
+from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
+import os
+from Scrap_realtor import get_realtor_properties
+load_dotenv()
 
 
-from flask_migrate import Migrate
-from config import Config
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+db.init_app(app)
 
 
-# Initialize database
-db = SQLAlchemy(app)
 
-from models import User, Property
-# Replace with your actual API key
-IPINFO_TOKEN = "1fa5cd7debaa74"
-GEOAPIFY_API_KEY = "f3e6910ed731470e8f7463759f3d5b37"
-
-@app.route('/init_db')
-def init_db():
-    # Create tables
-    db.create_all()
-    
-    # Create sample data
-    user1 = User(username='john', email='john@example.com', token=GEOAPIFY_API_KEY)
-    user2 = User(username='sarah', email='sarah@example.com', token=GEOAPIFY_API_KEY)
-
-    property1 = Property(
-        title='Beautiful Family Home',
-        description='Spacious 4-bedroom house with garden',
-        price=750000,
-        bedrooms=4,
-        bathrooms=2.5,
-        sqft=2400,
-        address='123 Main St',
-        city='San Francisco',
-        state='CA',
-        zip_code='94105',
-        owner=user1
-    )
-    
-    property2 = Property(
-        title='Modern Downtown Condo',
-        description='Luxury condo with city views',
-        price=950000,
-        bedrooms=2,
-        bathrooms=2,
-        sqft=1200,
-        address='456 Market St',
-        city='San Francisco',
-        state='CA',
-        zip_code='94103',
-        owner=user2
-    )
-    
-    db.session.add(user1)
-    db.session.add(user2)
-    db.session.add(property1)
-    db.session.add(property2)
-    db.session.commit()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -74,8 +31,6 @@ def login():
         address = request.form.get('address')
         token = request.form.get('token')
         if username and email and address and token:    
-            # Here you would typically verify the token and authenticate the user
-            # For simplicity, we will just create a new user
             user = User(username=username, email=email, address=address)
             db.session.add(user)
             db.session.commit()
@@ -83,17 +38,32 @@ def login():
         else:
             message = "All fields are required."
     return render_template('register.html', message=message)
-
-
 @app.route('/users')
 def users():
     all_users = User.query.all()
     return render_template('users.html', users=all_users)
 
+@app.route('/Listing', methods=['GET', 'POST'])
+def listing():
+    bp = Blueprint('listings', __name__)
+   # location = request.args.get('location', 'New York, NY')
+   # min_price = request.args.get('min_price', type=int)
+   # max_price = request.args.get('max_price', type=int)
+   # bedrooms = request.args.get('bedrooms', type=int)
+    
+    properties = get_realtor_properties(
+        location='New York, NY',
+        min_price=0,
+        max_price=99999,
+        bedrooms=2,
+        limit=24
+    )
+    
+    return render_template('listings.html', properties=properties)
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
-
-    token = "f3e6910ed731470e8f7463759f3d5b37"
+    token = GEOAPIFY_API_KEY
     location = None
     lat = None
     lon = None

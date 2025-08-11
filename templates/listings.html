@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Registered Users & Locations</h2>
+  <div class="property-header">
+        <div class="container">
+            <a href="{{ url_for('listings.property_search') }}" class="back-link">
+                <i class="bi bi-arrow-left"></i> Back to Search Results
+            </a>
+            <h1>{{ property.address }}</h1>
+            <h3>{{ property.city }}, {{ property.state }} {{ property.zip }}</h3>
+            <p>Price: ${{ property.price }}</p>
+            <p>Bedrooms: {{ property.beds }}</p>
+            <p>Bathrooms: {{ property.baths }}</p>
+            <p>Square Feet: {{ property.sqft }}</p>
+            <img src="{{ property.photo }}" alt="Property Photo" class="img-fluid">
+            <p>Listing Date: {{ property.listing_date }}</p>
+            <a href="{{ property.permalink }}" class="btn btn-primary">View Listing</a>
+      
+        </div>
+    </div>
+{% endblock %}

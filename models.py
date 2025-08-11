@@ -1,5 +1,5 @@
 from datetime import datetime
-from app import db
+from extensions import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,9 +7,10 @@ class User(db.Model):
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     address = db.Column(db.String(200), nullable=True)
     token = db.Column(db.String(200), nullable=True)  # Token for API access
+    properties = db.relationship('Property', backref='owner', lazy=True)
+
     
     # Relationship to properties (one-to-many)
-    properties = db.relationship('Property', backref='owner', lazy='dynamic')
 
     def __init__(self, username, email, address=None, token=None):
         self.username = username
@@ -34,9 +35,10 @@ class Property(db.Model):
     zip_code = db.Column(db.String(20))
     listed_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
 
-    def __init__(self, title, description, price, bedrooms, bathrooms, sqft, address, city, state, zip_code, owner):
+    def __init__(self, title, description, price, bedrooms, bathrooms, sqft, address, city, state, zip_code, owner_id):
         self.title = title
         self.description = description
         self.price = price
@@ -47,11 +49,7 @@ class Property(db.Model):
         self.city = city
         self.state = state
         self.zip_code = zip_code
-        self.owner = owner
-
-
+        self.owner_id = owner_id
     # Foreign key to User
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
     def __repr__(self):
         return f'<Property {self.title}>'

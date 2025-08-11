@@ -1,0 +1,118 @@
+.property-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+            color: white;
+            padding: 60px 0 40px;
+            margin-bottom: 30px;
+        }
+        .property-gallery {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .thumbnail-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .thumbnail {
+            width: 100px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .thumbnail:hover, .thumbnail.active {
+            opacity: 1;
+        }
+        .price-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(13, 110, 253, 0.9);
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 5px;
+            z-index: 10;
+        }
+        .detail-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        .detail-card-header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+        .detail-card-body {
+            padding: 20px;
+        }
+        .feature-list {
+            columns: 2;
+            list-style: none;
+            padding-left: 0;
+        }
+        .feature-list li {
+            margin-bottom: 10px;
+        }
+        .feature-list li:before {
+            content: "✓";
+            color: #0d6efd;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .school-badge {
+            background-color: #e9f7fe;
+            border-left: 3px solid #0d6efd;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+        .agent-card {
+            text-align: center;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .agent-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid #0d6efd;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .property-gallery {
+                height: 350px;
+            }
+            .feature-list {
+                columns: 1;
+            }
+        }

@@ -3,8 +3,8 @@
 {% block content %}
     <h1>{% block title %} Welcome to your Flask app! {% endblock %}</h1>
     <form method="post" action="{{ url_for('home') }}">
-        <input type="text" name="token" placeholder="Enter token"  value='f3e6910ed731470e8f7463759f3d5b37'required>
-        <input type="text" name="location" placeholder="Enter desired location" value="23 Montrose Road Taringa Australia" required>
+        <input type="text" name="token" placeholder="Enter token"  value=''required>
+        <input type="text" name="location" placeholder="Enter desired location" value="" required>
         <button type="submit">Search</button>
     </form>
     {% if token %}

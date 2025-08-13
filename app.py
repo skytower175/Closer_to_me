@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, render_template, request, jsonify
+from flask import Blueprint, Flask, json, render_template, request, jsonify
 import requests
 from datetime import datetime
 import googlemaps   
@@ -10,17 +10,12 @@ from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 import os
 from Scrap_realtor import get_realtor_properties
+import logging
+
 load_dotenv()
-
-
-
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db.init_app(app)
-
-
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -49,8 +44,7 @@ def listing():
    # location = request.args.get('location', 'New York, NY')
    # min_price = request.args.get('min_price', type=int)
    # max_price = request.args.get('max_price', type=int)
-   # bedrooms = request.args.get('bedrooms', type=int)
-    
+   # bedrooms = request.args.get('bedrooms', type=int)    
     properties = get_realtor_properties(
         location='New York, NY',
         min_price=0,
@@ -58,9 +52,9 @@ def listing():
         bedrooms=2,
         limit=24
     )
-    
-    return render_template('listings.html', properties=properties)
+    app.logger.info(f"Fetched properties: {properties}")
 
+    return render_template('listings.html', properties=properties)
 @app.route('/', methods=['GET', 'POST'])
 def home():
     token = GEOAPIFY_API_KEY
@@ -69,8 +63,6 @@ def home():
     lon = None
     school = None
     shopping = None
-    
-    
     geoapify_key = GEOAPIFY_API_KEY
 
     if request.method == 'POST':
@@ -117,8 +109,7 @@ def home():
             
     return render_template(
         'home.html',
-        token=token,
-        location=location,
+        #token=token,
         lat=lat,
         lon=lon,
         school=school,

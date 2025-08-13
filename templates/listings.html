@@ -1,21 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Registered Users & Locations</h2>
-  <div class="property-header">
-        <div class="container">
-            <a href="{{ url_for('listings.property_search') }}" class="back-link">
-                <i class="bi bi-arrow-left"></i> Back to Search Results
-            </a>
-            <h1>{{ property.address }}</h1>
-            <h3>{{ property.city }}, {{ property.state }} {{ property.zip }}</h3>
-            <p>Price: ${{ property.price }}</p>
-            <p>Bedrooms: {{ property.beds }}</p>
-            <p>Bathrooms: {{ property.baths }}</p>
-            <p>Square Feet: {{ property.sqft }}</p>
-            <img src="{{ property.photo }}" alt="Property Photo" class="img-fluid">
-            <p>Listing Date: {{ property.listing_date }}</p>
-            <a href="{{ property.permalink }}" class="btn btn-primary">View Listing</a>
-      
-        </div>
-    </div>
+  <h2>Property Listings</h2>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Photo</th>
+      <th>Address</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Zip</th>
+      <th>Price</th>
+      <th>Beds</th>
+      <th>Baths</th>
+      <th>Sqft</th>
+      <th>Listing Date</th>
+      <th>Link</th>
+    </tr>
+    {% for property in properties %}
+    <tr>
+      <td>
+        {% if property.photo %}
+          <img src="{{ property.photo }}" alt="Photo" width="100">
+        {% else %}
+          No photo
+        {% endif %}
+      </td>
+      <td>{{ property.address }}</td>
+      <td>{{ property.city }}</td>
+      <td>{{ property.state }}</td>
+      <td>{{ property.zip }}</td>
+      <td>${{ property.price }}</td>
+      <td>{{ property.beds }}</td>
+      <td>{{ property.baths }}</td>
+      <td>{{ property.sqft }}</td>
+      <td>{{ property.listing_date }}</td>
+      <td>
+        {% if property.permalink %}
+          <a href="{{ property.permalink }}" target="_blank">View</a>
+        {% else %}
+          N/A
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
 {% endblock %}
